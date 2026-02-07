@@ -3,7 +3,7 @@
 
 import { GoogleGenAI } from '@google/genai';
 
-const API_KEY = process.env.API_KEY || 'AIzaSyAoq5l3peqg1E2QgJxOSyKMzLWxGHt_jv0';
+const API_KEY = process.env.API_KEY ;
 
 async function testGeminiAPI() {
   try {
