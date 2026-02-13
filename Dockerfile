@@ -1,30 +1,31 @@
 # Stage 1: Build
-FROM node:20-alpine AS build
+# Build stage for creating the production build
+FROM node:20-alpine AS build 
 
 WORKDIR /app
 
+# Copy the package files
 COPY package.json package-lock.json ./
-RUN npm ci
+ # Install dependencies
+RUN npm ci 
 
+ # Copy the rest of the application code
 COPY . .
 
-ARG API_KEY
-ARG STABILITY_API_KEY
-ARG HF_API_KEY
+# Build the application
+RUN npm run build 
 
-ENV API_KEY=$API_KEY
-ENV STABILITY_API_KEY=$STABILITY_API_KEY
-ENV HF_API_KEY=$HF_API_KEY
-
-RUN npm run build
 
 # Stage 2: Serve
-FROM nginx:alpine
+# Serve stage for running the production build
+FROM nginx:alpine 
 
-COPY --from=build /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copy the production build to the nginx server
+COPY --from=build /app/dist /usr/share/nginx/html 
+# Copy the nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf 
 
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
-
+# Start the nginx server
+CMD ["nginx", "-g", "daemon off;"] 
